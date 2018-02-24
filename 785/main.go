@@ -9,24 +9,47 @@ func main() {
 	fmt.Println(isBipartite(graph))
 }
 
+type stack struct {
+	top    *node
+	length int
+}
+
+type node struct {
+	next  *node
+	value int
+}
+
+func (s *stack) push(value int) {
+	s.top = &node{s.top, value}
+	s.length++
+}
+
+func (s *stack) pop() int {
+	if s.length < 1 {
+		return -1
+	}
+	value := s.top.value
+	s.top = s.top.next
+	s.length--
+
+	return value
+}
+
 func isBipartite(graph [][]int) bool {
 	set := make(map[int]int)
 
 	for i := 0; i < len(graph); i++ {
 		if set[i] == 0 {
-			top := 0
-			stack := make([]int, 100000)
-			stack[top] = i
+			todo := stack{nil, 0}
+			todo.push(i)
 			set[i] = 1
 
-			for top >= 0 {
-				node := stack[top]
-				top--
+			for todo.length > 0 {
+				node := todo.pop()
 
 				for _, nei := range graph[node] {
 					if set[nei] == 0 {
-						top++
-						stack[top] = nei
+						todo.push(nei)
 
 						if set[node] == 1 {
 							set[nei] = 2
