@@ -7,18 +7,19 @@ import (
 func twoSum(nums []int, target int) []int {
 	m := make(map[int]int)
 	for k, v := range nums {
-		m[v] = k
-	}
-
-	for k, v := range nums {
 		if val, ok := m[target-v]; ok {
 			if k == val {
 				continue
 			} else {
+				if k > val {
+					return []int{val, k}
+				}
 				return []int{k, val}
 			}
 		}
+		m[v] = k
 	}
+
 	return []int{0, 0}
 }
 
