@@ -6,6 +6,9 @@ import (
 
 func twoSum(nums []int, target int) []int {
 	m := make(map[int]int)
+	// Store value in map
+	// Lookup difference in map and retrieve key
+
 	for k, v := range nums {
 		if val, ok := m[target-v]; ok {
 			if k == val {
