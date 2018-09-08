@@ -1,68 +1,48 @@
 package main
 
-import (
-	"fmt"
-)
-
 func longestPalindrome(s string) string {
 	if s == "" {
 		return ""
 	}
-	r := []rune(s)
+	start, end := 0, 0
 
-	max := 0
-	cur := 0
-	curLength := 0
+	for i := 0; i < len(s); i++ {
+		if len(s)-i < (end-start)/2 {
+			break
+		}
+		l1, r1 := expandAroundCentre(s, i, i)
+		l2, r2 := expandAroundCentre(s, i, i+1)
 
-	bestLeft := 0
-	bestRight := 0
+		len1 := r1 - l1
+		len2 := r2 - l2
 
-	leftRunner := 0
-	rightRunner := len(r) - 1
-	// abba
-	for cur < len(r)-1 {
-		if leftRunner == rightRunner {
-			cur++
-			curLength = 0
-			leftRunner = cur
-			rightRunner = len(r) - 1
-		} else if r[leftRunner] == r[rightRunner] {
-			leftRunner++
-			rightRunner--
-			curLength++
-			if leftRunner >= rightRunner {
-				if curLength > max {
-					bestLeft = leftRunner - curLength
-					bestRight = rightRunner + curLength
-					max = curLength
-					curLength = 0
-					cur++
-					leftRunner = cur
-					rightRunner = len(r) - 1
-				} else {
-					curLength = 0
-					cur++
-					leftRunner = cur
-					rightRunner = len(r) - 1
-				}
-			}
-		} else {
-			rightRunner--
-			leftRunner = cur
-
-			curLength = 0
-			if rightRunner < leftRunner {
-				cur++
-				curLength = 0
-				leftRunner = cur
-				rightRunner = len(r) - 1
+		if max(len1, len2) > end-start {
+			if len1 > len2 {
+				start, end = l1, r1
+			} else {
+				start, end = l2, r2
 			}
 		}
 	}
 
-	return string(r[bestLeft : bestRight+1])
+	return s[start : end+1]
+}
+
+func expandAroundCentre(s string, left int, right int) (int, int) {
+	for left >= 0 && right < len(s) && s[left] == s[right] {
+		left--
+		right++
+	}
+	return left + 1, right - 1
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 func main() {
-	fmt.Println(longestPalindrome("aaabaaaa"))
+
 }
